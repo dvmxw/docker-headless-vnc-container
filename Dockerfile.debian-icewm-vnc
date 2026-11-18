@@ -5,7 +5,7 @@ FROM debian:12
 LABEL maintainer="Sven Nierlein sven@consol.de"
 ENV REFRESHED_AT=2024-08-28
 
-LABEL io.k8s.description="Headless VNC Container with IceWM window manager, firefox and chromium" \
+LABEL io.k8s.description="Headless VNC Container with IceWM, Chinese Pinyin input, and Google Chrome" \
       io.k8s.display-name="Headless VNC Container based on Debian" \
       io.openshift.expose-services="6901:http,5901:xvnc" \
       io.openshift.tags="vnc, debian, icewm" \
@@ -40,9 +40,16 @@ ADD ./src/debian/systemd/ /etc/systemd/system/
 ### Install some common tools
 RUN $INST_SCRIPTS/tools.sh
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+ENV GTK_IM_MODULE=fcitx \
+    QT_IM_MODULE=fcitx \
+    XMODIFIERS=@im=fcitx
 
 ### Install systemd, git, and the current Node.js release
 RUN $INST_SCRIPTS/systemd_node_git.sh
+
+### Install Chinese Pinyin input and Google Chrome
+RUN $INST_SCRIPTS/pinyin.sh
+RUN $INST_SCRIPTS/google_chrome.sh
 
 ### Install custom fonts
 RUN $INST_SCRIPTS/install_custom_fonts.sh
@@ -50,10 +57,6 @@ RUN $INST_SCRIPTS/install_custom_fonts.sh
 ### Install xvnc-server & noVNC - HTML5 based VNC viewer
 RUN $INST_SCRIPTS/tigervnc.sh
 RUN $INST_SCRIPTS/no_vnc.sh
-
-### Install firefox and chrome browser
-RUN $INST_SCRIPTS/firefox.sh
-RUN $INST_SCRIPTS/chrome.sh
 
 ### Install IceWM UI
 RUN $INST_SCRIPTS/icewm_ui.sh

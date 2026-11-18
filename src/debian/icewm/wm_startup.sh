@@ -9,6 +9,6 @@ xset -dpms &
 xset s noblank &
 xset s off &
 
-/usr/bin/icewm-session > $HOME/wm.log &
+dbus-launch --exit-with-session /bin/bash -c 'fcitx5 -d; exec /usr/bin/icewm-session' > $HOME/wm.log &
 sleep 1
 cat $HOME/wm.log

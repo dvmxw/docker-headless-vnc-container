@@ -15,6 +15,9 @@ The Debian IceWM Chrome launcher uses `--no-sandbox` because some container
 hosts block the namespaces required by Chrome's sandbox. This weakens browser
 isolation; use it only to browse trusted content.
 
+The Debian IceWM image runs as the named `headless` user (UID 1000). This user
+has passwordless `sudo` access inside the container.
+
 ![Docker VNC Desktop access via HTML page](.pics/vnc_container_view.png)
 
 ## Build Status
@@ -77,7 +80,7 @@ cgroups; only use these options in a trusted environment.
 If the container is started like mentioned above, connect via one of these options:
 
 * connect via __VNC viewer `localhost:5901`__, default password: `vncpassword`
-* connect via __noVNC HTML5 full client__: [`http://localhost:6901/vnc.html`](http://localhost:6901/vnc.html), default password: `vncpassword`
+* connect via __noVNC HTML5 full client__: [`http://localhost:6901/vnc.html?resize=remote`](http://localhost:6901/vnc.html?resize=remote), default password: `vncpassword`; the remote desktop resizes to the browser viewport
 * connect via __noVNC HTML5 lite client__: [`http://localhost:6901/?password=vncpassword`](http://localhost:6901/?password=vncpassword)
 
 

@@ -54,7 +54,7 @@ Usage is **similar** for all provided images, e.g. for `consol/rocky-xfce-vnc`:
 
 ### Debian IceWM: systemd, Git, and Node.js
 The Debian IceWM image is the lightweight Debian variant. It includes Git and
-the current Node.js release from NodeSource's `node_current.x` repository.
+the current Node.js 26.x release from NodeSource.
 By default, VNC runs as UID 1000. To run systemd as PID 1 and start the VNC
 desktop as a systemd service, enable systemd explicitly and run as root:
 

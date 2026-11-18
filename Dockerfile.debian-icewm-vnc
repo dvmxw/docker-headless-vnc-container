@@ -35,10 +35,14 @@ WORKDIR $HOME
 ### Add all install scripts for further steps
 ADD ./src/common/install/ $INST_SCRIPTS/
 ADD ./src/debian/install/ $INST_SCRIPTS/
+ADD ./src/debian/systemd/ /etc/systemd/system/
 
 ### Install some common tools
 RUN $INST_SCRIPTS/tools.sh
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+
+### Install systemd, git, and the current Node.js release
+RUN $INST_SCRIPTS/systemd_node_git.sh
 
 ### Install custom fonts
 RUN $INST_SCRIPTS/install_custom_fonts.sh
@@ -60,7 +64,13 @@ RUN $INST_SCRIPTS/libnss_wrapper.sh
 ADD ./src/common/scripts $STARTUPDIR
 RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
 
-USER 1000
+RUN mkdir -p /etc/systemd/system/multi-user.target.wants \
+    && ln -s /etc/systemd/system/vnc.service /etc/systemd/system/multi-user.target.wants/vnc.service \
+    && chmod 0755 $STARTUPDIR/container_entrypoint.sh
 
-ENTRYPOINT ["/dockerstartup/vnc_startup.sh"]
+USER 1000
+ENV container=docker
+STOPSIGNAL SIGRTMIN+3
+
+ENTRYPOINT ["/dockerstartup/container_entrypoint.sh"]
 CMD ["--wait"]

@@ -18,9 +18,9 @@ Each Docker image is installed with the following components:
 
 ## Current provided OS & UI sessions:
 * `consol/rocky-xfce-vnc`: __Rocky 9 with `Xfce4` UI session__
-* `consol/debian-xfce-vnc`: __Debian 11 with `Xfce4` UI session__
+* `consol/debian-xfce-vnc`: __Debian 12 with `Xfce4` UI session__
 * `consol/rocky-icewm-vnc`: __Rocky 9 with `IceWM` UI session__
-* `consol/debian-icewm-vnc`: __Debian 11 with `IceWM` UI session__
+* `consol/debian-icewm-vnc`: __Debian 12 with `IceWM` UI session__
 
 ## OpenShift / Kubernetes
 
@@ -51,6 +51,23 @@ Usage is **similar** for all provided images, e.g. for `consol/rocky-xfce-vnc`:
 - Build an image from scratch:
 
       docker build -t consol/rocky-xfce-vnc rocky-xfce-vnc
+
+### Debian IceWM: systemd, Git, and Node.js
+The Debian IceWM image is the lightweight Debian variant. It includes Git and
+the current Node.js release from NodeSource's `node_current.x` repository.
+By default, VNC runs as UID 1000. To run systemd as PID 1 and start the VNC
+desktop as a systemd service, enable systemd explicitly and run as root:
+
+```bash
+docker run --user 0 --privileged --cgroupns=host \
+  --tmpfs /run --tmpfs /run/lock \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+  -e SYSTEMD=true -p 5901:5901 -p 6901:6901 \
+  consol/debian-icewm-vnc
+```
+
+Running systemd in a container requires elevated privileges and writable
+cgroups; only use these options in a trusted environment.
 
 # Connect & Control
 If the container is started like mentioned above, connect via one of these options:

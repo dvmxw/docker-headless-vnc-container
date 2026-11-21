@@ -8,15 +8,15 @@ Each Docker image is installed with the following components:
 * VNC-Server (default VNC port `5901`)
 * [**noVNC**](https://github.com/novnc/noVNC) - HTML5 VNC client (default http port `6901`)
 * Browsers:
-  * Google Chrome and Chinese Pinyin input on Debian IceWM
+  * Google Chrome and Chinese Pinyin input on both Debian images
   * Mozilla Firefox and Chromium on the other images
 
-The Debian IceWM Chrome launcher uses `--no-sandbox` because some container
+The Debian Chrome launchers use `--no-sandbox` because some container
 hosts block the namespaces required by Chrome's sandbox. This weakens browser
 isolation; use it only to browse trusted content.
 
-The Debian IceWM image runs as the named `headless` user (UID 1000). This user
-has passwordless `sudo` access inside the container.
+Both Debian images run as the named `headless` user (UID 1000). This user has
+passwordless `sudo` access inside the container.
 
 ![Docker VNC Desktop access via HTML page](.pics/vnc_container_view.png)
 
@@ -59,9 +59,9 @@ Usage is **similar** for all provided images, e.g. for `consol/rocky-xfce-vnc`:
 
       docker build -t consol/rocky-xfce-vnc rocky-xfce-vnc
 
-### Debian IceWM: systemd, Git, and Node.js
-The Debian IceWM image is the lightweight Debian variant. It includes Git and
-the current Node.js 26.x release from NodeSource.
+### Debian images: systemd, Git, and Node.js
+Both Debian images include systemd, Git, and the current Node.js 26.x release
+from NodeSource. Debian IceWM is the lighter desktop variant.
 By default, VNC runs as UID 1000. To run systemd as PID 1 and start the VNC
 desktop as a systemd service, enable systemd explicitly and run as root:
 
@@ -70,7 +70,7 @@ docker run --user 0 --privileged --cgroupns=host \
   --tmpfs /run --tmpfs /run/lock \
   -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
   -e SYSTEMD=true -p 5901:5901 -p 6901:6901 \
-  consol/debian-icewm-vnc
+  consol/debian-xfce-vnc
 ```
 
 Running systemd in a container requires elevated privileges and writable
